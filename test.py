@@ -15,7 +15,7 @@ class TestMD5(unittest.TestCase):
     }
 
     def testRFC1321(self):
-        for msg, _hash in self.rfc1321TestCases.iteritems():
+        for msg, _hash in self.rfc1321TestCases.items():
             self.assertEqual(md5(msg), _hash)
 
 
