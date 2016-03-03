@@ -1,5 +1,5 @@
 import unittest
-from hash import md5
+from hash import MD5
 
 
 class TestMD5(unittest.TestCase):
@@ -15,8 +15,9 @@ class TestMD5(unittest.TestCase):
     }
 
     def test_RFC1321(self):
+        hash_creator = MD5()
         for msg, _hash in self.RFC1321_test_cases.items():
-            self.assertEqual(md5(msg), _hash)
+            self.assertEqual(hash_creator.md5(msg), _hash)
 
 
 if __name__ == '__main__':
