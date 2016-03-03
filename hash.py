@@ -9,15 +9,15 @@ class MD5(object):
 
     constants = [int(abs(2 ** 32 * sin(i + 1))) & 0xffffffff for i in range(64)]
 
-    functions = 16 * [lambda b, c, d: (b & c) | (~b & d)] + \
-                16 * [lambda b, c, d: (d & b) | (~d & c)] + \
-                16 * [lambda b, c, d: b ^ c ^ d] + \
-                16 * [lambda b, c, d: c ^ (b | ~d)]
+    functions = [lambda b, c, d: (b & c) | (~b & d),
+                 lambda b, c, d: (d & b) | (~d & c),
+                 lambda b, c, d: b ^ c ^ d,
+                 lambda b, c, d: c ^ (b | ~d)]
 
-    index_functions = 16 * [lambda i: i] + \
-                      16 * [lambda i: (5 * i + 1) % 16] + \
-                      16 * [lambda i: (3 * i + 5) % 16] + \
-                      16 * [lambda i: (7 * i) % 16]
+    index_functions = [lambda i: i,
+                       lambda i: (5 * i + 1) % 16,
+                       lambda i: (3 * i + 5) % 16,
+                       lambda i: (7 * i) % 16]
 
     def __init__(self, init_values=[0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]):
         self.init_values = init_values
@@ -41,8 +41,8 @@ class MD5(object):
             a, b, c, d = registers
             chunk = message[chunk_ofst:chunk_ofst + 64]
             for i in range(64):
-                f = self.functions[i](b, c, d)
-                g = self.index_functions[i](i)
+                f = self.functions[i // 16](b, c, d)
+                g = self.index_functions[i // 16](i)
                 to_rotate = a + f + self.constants[i] + int.from_bytes(chunk[4 * g:4 * g + 4], byteorder='little')
                 new_b = (b + self.left_rotate(to_rotate, self.rotate_amounts[i])) & 0xffffffff
                 a, b, c, d = d, new_b, b, c
