@@ -9,8 +9,6 @@ class MD5(object):
 
     constants = [int(abs(2 ** 32 * sin(i + 1))) & 0xffffffff for i in range(64)]
 
-    init_values = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
-
     functions = 16 * [lambda b, c, d: (b & c) | (~b & d)] + \
                 16 * [lambda b, c, d: (d & b) | (~d & c)] + \
                 16 * [lambda b, c, d: b ^ c ^ d] + \
@@ -20,6 +18,9 @@ class MD5(object):
                       16 * [lambda i: (5 * i + 1) % 16] + \
                       16 * [lambda i: (3 * i + 5) % 16] + \
                       16 * [lambda i: (7 * i) % 16]
+
+    def __init__(self, init_values=[0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]):
+        self.init_values = init_values
 
     @staticmethod
     def left_rotate(x, amount):
