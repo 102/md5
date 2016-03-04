@@ -1,5 +1,8 @@
 import unittest
+import random
+import string
 from hash import MD5
+from hashlib import md5 as hashlib_md5
 
 
 class TestMD5(unittest.TestCase):
@@ -18,6 +21,16 @@ class TestMD5(unittest.TestCase):
         hash_creator = MD5()
         for msg, _hash in self.RFC1321_test_cases.items():
             self.assertEqual(hash_creator.md5(msg), _hash)
+
+    def test_compare_with_hashlib(self):
+        s = string.ascii_letters
+        md5_creator = MD5()
+
+        for i in range(1000):
+            hashlib_md_creator = hashlib_md5()
+            message = ''.join(random.sample(s, random.randint(0, 50)))
+            hashlib_md_creator.update(bytearray(message, 'UTF-8'))
+            self.assertEqual(md5_creator.md5(message), hashlib_md_creator.hexdigest())
 
 
 if __name__ == '__main__':
