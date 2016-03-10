@@ -16,13 +16,14 @@ class MD5(object):
 
     functions = []
 
-    index_functions = [lambda i: i,
+    index_functions = (lambda i: i,
                        lambda i: (5 * i + 1) % 16,
                        lambda i: (3 * i + 5) % 16,
-                       lambda i: (7 * i) % 16]
+                       lambda i: (7 * i) % 16)
 
-    def __init__(self, init_values=[0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476], order=['f', 'g', 'h', 'k']):
-        self.init_values = init_values
+    def __init__(self, order=('f', 'g', 'h', 'k'), init_values=(0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476)):
+        self.init_values = list(init_values)
+        self.functions = []
         for i in order:
             self.functions.append(self._functions[i])
 
@@ -54,7 +55,9 @@ class MD5(object):
                 registers[i] += val
                 registers[i] &= 0xffffffff
 
-        return sum(x << (32 * j) for j, x in enumerate(registers))
+        digest = sum(x << (32 * j) for j, x in enumerate(registers))
+
+        return digest
 
     @staticmethod
     def md5_to_hex(digest):
