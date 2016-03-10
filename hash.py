@@ -9,18 +9,22 @@ class MD5(object):
 
     constants = [int(abs(2 ** 32 * sin(i + 1))) & 0xffffffff for i in range(64)]
 
-    functions = [lambda b, c, d: (b & c) | (~b & d),
-                 lambda b, c, d: (d & b) | (~d & c),
-                 lambda b, c, d: b ^ c ^ d,
-                 lambda b, c, d: c ^ (b | ~d)]
+    _functions = {'f': lambda b, c, d: (b & c) | (~b & d),
+                  'g': lambda b, c, d: (d & b) | (~d & c),
+                  'h': lambda b, c, d: b ^ c ^ d,
+                  'k': lambda b, c, d: c ^ (b | ~d)}
+
+    functions = []
 
     index_functions = [lambda i: i,
                        lambda i: (5 * i + 1) % 16,
                        lambda i: (3 * i + 5) % 16,
                        lambda i: (7 * i) % 16]
 
-    def __init__(self, init_values=[0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]):
+    def __init__(self, init_values=[0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476], order=['f', 'g', 'h', 'k']):
         self.init_values = init_values
+        for i in order:
+            self.functions.append(self._functions[i])
 
     @staticmethod
     def left_rotate(x, amount):
