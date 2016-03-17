@@ -41,9 +41,9 @@ class MD5(object):
 
         registers = self.init_values[:]
 
-        for chunk_ofst in range(0, len(message), 64):
+        for chunk_offset in range(0, len(message), 64):
             a, b, c, d = registers
-            chunk = message[chunk_ofst:chunk_ofst + 64]
+            chunk = message[chunk_offset:chunk_offset + 64]
             for i in range(64):
                 f = self.functions[i // 16](b, c, d)
                 g = self.index_functions[i // 16](i)
